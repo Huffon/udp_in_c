@@ -15,13 +15,12 @@ void receive(int sock);
 void make_file(Packet pck, int count);
 bool is_first = true;
 
-void main()
-{
+void main() {
     int sock;
     struct sockaddr_in serv_addr;
 
     // create socket
-    if((sock = socket(PF_INET, SOCK_DGRAM, 0)) == -1){
+    if ((sock = socket(PF_INET, SOCK_DGRAM, 0)) == -1) {
         printf("socket failed\n");
         exit(1);
     }
@@ -35,7 +34,7 @@ void main()
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); // 32bit IPv4 address
 
     // bind()
-    if(bind(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))){
+    if (bind(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) {
         printf("bind failed\n");
         exit(1);
     }
@@ -45,15 +44,14 @@ void main()
     close(sock);
 }
 
-void receive(int sock)
-{
+void receive(int sock) {
     int cli_addr_size;
     int cnt = 0;
     struct sockaddr_in cli_addr;
 
     Packet pck;
 
-    while(1){
+    while (1) {
         cli_addr_size = sizeof(cli_addr);
         pck.pck_len = recvfrom(sock, pck.buffer, BUFSIZE, 0,
             (struct sockaddr*)&cli_addr, &cli_addr_size);
@@ -68,16 +66,17 @@ void receive(int sock)
     printf("The file has been received!\n");
 }
 
-void make_file(Packet pck, int count)
-{
+void make_file(Packet pck, int count) {
     FILE* fp = NULL;
     long int offset;
 
-    if(is_first == true){
+    // if read file first, make a new file
+    if (is_first == true) {
         fp = fopen(FILENAME, "w+");
         is_first = false;
     }
-    else{
+    // else, just append buffer to file
+    else {
         fp = fopen(FILENAME, "a");
         offset = BUFSIZE * count;
         fseek(fp, offset, SEEK_SET);

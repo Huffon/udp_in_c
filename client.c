@@ -11,8 +11,7 @@
 
 #define FILENAME "input.txt"
 
-void main(int argc, char* argv[])
-{
+void main(int argc, char* argv[]) {
     int sock;
     int serv_addr_size;
     struct sockaddr_in serv_addr;
@@ -22,7 +21,7 @@ void main(int argc, char* argv[])
 
     Packet pck;
 
-    if((sock = socket(PF_INET, SOCK_DGRAM, 0)) == -1){
+    if ((sock = socket(PF_INET, SOCK_DGRAM, 0)) == -1) {
         printf("socket failed\n");
         exit(1);
     }
@@ -40,7 +39,8 @@ void main(int argc, char* argv[])
     f_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    while(f_size > 0){
+    // loop until file is completly sent
+    while (f_size > 0) {
         pck.pck_len = f_size > BUFSIZE ? BUFSIZE : f_size;
 
         fread(pck.buffer, pck.pck_len, 1, fp);
@@ -49,6 +49,7 @@ void main(int argc, char* argv[])
 
         f_size -= pck.pck_len;
     }
+    // send eof to server
     sendto(sock, &eof, sizeof(eof), 0,
             (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     printf("The file has been sent.\n");

@@ -3,12 +3,12 @@
 
 char eof = 0x1A;
 
+// Fake Packet
 typedef struct _PACKET {
     // Packet infomation
     char buffer[BUFSIZE];
     char src_ip[20];
     char dest_ip[20];
-    int protocol;
 
     // UDP header
     char dest_port[10];
